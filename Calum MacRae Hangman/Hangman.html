@@ -1,0 +1,225 @@
+
+<html>
+<head>
+<link rel="icon" href="Extra Images/icon.ico" type="image/x-icon">
+<title>
+Hangman
+</title>
+<style>
+html{
+	background-color:#385a61;	
+	align-content: center;
+	color:#fcfaff;
+	 font-family: "Trebuchet MS", Helvetica, sans-serif;
+	 font-size:20px;
+	}
+button {
+ width:4%;
+ height: 35px;
+ cursor: pointer;
+ border-radius: 65%;
+ background-color:#b9f0d3;
+}
+button:hover{
+   box-shadow: 0 8px 16px 0 rgba(0,0,0,0.2), 0 6px 20px 0 rgba(0,0,0,0.19);
+	
+}
+#picBox {
+
+width:305px;
+height:431px;
+float:right;
+margin-right: 30%;
+
+}
+
+#output{
+	text-align: center;
+}
+
+
+</style>
+
+</head>
+<body>
+
+<center><p>Click the button to play animal hangman in you web browser.</p>
+
+<button id="start" onClick="myFunction()">Let's Play</button><br><br>
+<button id="hint" onClick="hint()">Hint</button>
+<p id="p3">Hints Remaining:</p>
+</center>
+<script>
+	//Most of list list contains actually animals while there are some fantasy and fictional animals that can pop up such as dragon, sphinx, and centuar.
+	document.getElementById("hint").disabled = true;
+	var select=["LION","TIGER","RABBIT","ZEBRA", "KANGAROO", "PARROT", "DOG", "CAT", "MOOSE", "BEAVER", "TOUCAN", "PANDA", "SLOTH", "PENGUIN","APE","MONKEY","BASS", "EAGLE", "DRAGONFLY","BUTTERFLY", "ELEPHANT", "SKUNK", "LYNX", "SNAKE", "SHARK", "PIG", "COW", "SHEEP", "MOUSE","GAZELLE","RACOON","BEAR","WHALE","FISH","TURTLE","HEDGEHOG","SHARK","GIRAFFE","FROG","LIZARD","DONKEY","FIREFLY","GOOSE","DUCK","BULL","HAMSTER","FERRET","FOX","OX","WOLF","SCORPION","CENTIPEDE","DOVE","CRAB","GOAT","LLAMA","TARANTULA","SLUG","CHEETAH","LEMUR","HIPPO","HORSE","CHAMELEON","KOALA","BAT","WOMBAT","PLATYPUS","DINGO","ECHIDNA","KOOKABURRA","EMU","JELLYFISH","CROCODILE","LEOPARD","RHINO","BUFFALO","OCELOT","ALPACA","PIRANHA","ANACONDA","JAGUAR","DEER","TAPIR","OTTER","MANATEE","TORTOISE","CONDOR","OWL","BISON","WOLVERINE","CAMEL","DRAGON","ORANGUTANS","COUGAR","RACCOON","BOBCAT","REINDEER","OPOSSUM","GROUNDHOG","GOPHER","MAMMOTH","ARMADILLO","SEAL","PETREL","DOLPHIN","PELICAN","TURKEY","CHICKEN","BEE","ANT","ANTEATER","IGUANA","SQUIRREL","PHOENIX","SPHINX","CENTAUR","UNICORN","AARDVARK"]
+	var numGen= Math.floor(118 * Math.random() + 0);
+	var word= select[numGen];
+	var dashes=" "
+	var mistakes=0;
+	var points=0;
+	var wins=0;
+	//This gives the user a margin for 5 wrong answers
+	var errorPicture=["Hangman0.png", "Hangman1.png", "Hangman2.png", "Hangman3.png","Hangman4.png","Hangman5.png"]
+	var img = document.createElement("img");
+	//This variable is used in order to count buttons that will need to be reset when the user completes a word
+	var buttonCount=0;
+	//This is a hint counter that goes down every time the user uses a hint
+	var hints=10;
+	document.getElementById('p3').innerHTML=10;
+function createsDashed(){
+		var size= word.length
+		for(let W=0; W<size; W++){
+			dashes +="_";
+		}
+		 document.getElementById('output').innerHTML = dashes;
+		 document.getElementById("output").style.letterSpacing = "15px";
+		 document.getElementById("picbox").style.backgroundImage= "url("+errorPicture[mistakes]+")";
+}
+function myFunction() {
+	createsDashed();
+for(x=1;x<=26;x++){
+	//This modifies the start button so that the user is unable to recreate infinite amounts of letter buttons
+	document.getElementById("start").disabled = true;
+	start.style.cursor="no-drop";
+    var btn = document.createElement("BUTTON");
+	var myP = document.createElement("br");
+    var letter = String.fromCharCode(x+64);
+    var t = document.createTextNode(letter);
+    btn.appendChild(t);
+    btn.id =letter;
+    btn.addEventListener("click", checkLetter);
+    btn.addEventListener("mouseover", changeColor);
+    btn.addEventListener("mouseout", changeColor2);
+	btn.addEventListener("click", disableUse);
+	btn.addEventListener("click", checkLetter);
+	btn.addEventListener("click", checkComplete);
+	btn.addEventListener("click", checkLoss);
+	document.body.appendChild(btn);
+	if (x%7==0) {
+	document.body.appendChild(myP);
+	}
+	//adds 1 to the number of buttons each time one is created
+	buttonCount+=1;
+	}
+	//turns on the hint button to be used to guess the word
+	document.getElementById("hint").disabled = false;
+	hint.style.cursor="pointer";
+}
+
+function changeColor(){
+	this.style.backgroundColor="#9fa19a";
+	
+}
+function changeColor2(){
+	this.style.backgroundColor="#45d6c8";
+}
+function disableUse(){
+	//disables the button after it has already been clicked
+	document.getElementById(this.id).disabled = true;
+	this.style.cursor="no-drop";
+}
+function checkLetter(){
+	var letter=this.id;
+	var search=word.includes(letter);
+	if(search==true){
+		var newWord="";
+		for(a=0; a<word.length; a++){
+			if(word.charAt(a)!=this.id){
+				newWord+=dashes.charAt(a);
+			}
+			else{
+				newWord+=word.charAt(a);
+				points+=20;
+				document.getElementById('p2').innerHTML = points;
+				
+			}
+			//this code is here in order to fix an error that would cause the first dash to disappear as soon as a letter that isn't the first one is guessed
+			newWord=newWord.replace(" ", "_");
+		}
+		dashes=newWord
+		document.getElementById('output').innerHTML = dashes;
+	}
+	else{
+		alert("You got the wrong letter");
+		mistakes+=1;
+	 	document.getElementById("picbox").style.backgroundImage= "url("+errorPicture[mistakes]+")";
+	 	document.getElementById("p1").innerHTML+=this.id;
+		}
+		}
+	function checkComplete(){	
+	//this is used to reset the playing board while maintaining points and hints when the user gets a word correct
+	if(dashes==word){
+		alert("You got it right");
+		points+=100;
+		wins+=1;
+		dashes=""
+		document.getElementById('p2').innerHTML = points;
+		document.getElementById('p4').innerHTML = wins;
+		document.getElementById('p1').innerHTML= "Used Letters:";
+		numGen= Math.floor(17 * Math.random() + 0);
+		word= select[numGen];
+		createsDashed();
+		for(b=1; b<26; b++){
+			var check= String.fromCharCode(b+64);
+			document.getElementById(check).disabled = false;
+			document.getElementById(check).style.backgroundColor = "#b9f0d3";
+			document.getElementById(check).style.cursor = "pointer";
+		}
+	}
+}
+var myVar = setInterval(checkLoss, 1000);
+function checkLoss(){
+	if(mistakes==5){
+		alert("Game Over, the word was "+word);
+		var replay= confirm("Do you want to play again?")
+		if(replay==true){
+			mistakes=0;
+			document.getElementById("picbox").style.backgroundImage= "url("+errorPicture[mistakes]+")";
+			points=0;
+			wins=0;
+			dashes=""
+			document.getElementById('p2').innerHTML = "Score:";
+			document.getElementById('p4').innerHTML = "Total Wins:";
+			document.getElementById('p1').innerHTML= "Used Letters:";
+			numGen= Math.floor(17 * Math.random() + 0);
+			word= select[numGen];
+			createsDashed();
+			for(b=1; b<26; b++){
+				var check= String.fromCharCode(b+64);
+				document.getElementById(check).disabled = false;
+				document.getElementById(check).style.backgroundColor = "#b9f0d3";
+				document.getElementById(check).style.cursor = "pointer";
+			}
+		}
+		else{
+				location.reload();
+			}
+			}
+}
+function hint(){
+	if(hints==0){
+		alert("You have no more hints left silly.")
+	}
+	else{
+	//gives the user a letter in the word as a hint and removes 25 points from the score as a punishment
+	var long=word.length;
+	var indexGen=Math.floor(long * Math.random() + 0);
+	var letter= word.charAt(indexGen);
+	hints-=1;
+	points-=15;
+	alert("You have "+hints+" left. "+"The word contains the letter "+letter+".")
+	document.getElementById('p3').innerHTML =hints;
+	document.getElementById('p2').innerHTML = points;
+	}
+}
+	
+</script>
+<p id ="p1"> Used Letters: </p>
+<p id="p2">Score:</p>
+<p id="p4">Total Wins:</p><br>
+<div id= "picbox" src="#"></div><br>
+<h1><p id="output"></p></h1>
+</body>
+</center>
+</html>
